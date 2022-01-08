@@ -28,7 +28,7 @@ public class ClientSocket implements Runnable {
 
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(resultStr));
             BufferedOutputStream bos = new BufferedOutputStream(clientSocket.getOutputStream());
-            byte[] byteArray = new byte[8];
+            byte[] byteArray = new byte[4];
             while ((bis.read(byteArray)) != -1){
                 bos.write(byteArray);
             }

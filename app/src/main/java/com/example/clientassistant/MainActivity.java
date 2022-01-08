@@ -4,17 +4,16 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -62,18 +61,17 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             Log.w("Warning ","no PERMISSION ACCESS_NETWORK_STATE");
         }
-        else {
-            //new ClientSocket(fileName);
-            //new ClientSocket("1111111");
-        }
+        //new ClientSocket(fileName);
+        //new ClientSocket("1111111");
     }
 
     private void startRecording() {
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        recorder.setOutputFormat(AudioFormat.CHANNEL_CONFIGURATION_MONO);
+        recorder.setAudioEncoder(AudioFormat.ENCODING_PCM_16BIT);
+        recorder.setAudioSamplingRate(44100);
         recorder.setOutputFile(fileName);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
 
         try {
             recorder.prepare();
