@@ -67,10 +67,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void startRecording() {
         recorder = new MediaRecorder();
+        /*recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC_ELD);
+        recorder.setAudioSamplingRate(44100);*/
+
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(AudioFormat.CHANNEL_CONFIGURATION_MONO);
-        recorder.setAudioEncoder(AudioFormat.ENCODING_PCM_16BIT);
-        recorder.setAudioSamplingRate(44100);
+        recorder.setOutputFormat(AudioFormat.ENCODING_PCM_16BIT);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        recorder.setAudioChannels(1);
+        recorder.setAudioEncodingBitRate(128000);
+        recorder.setAudioSamplingRate(48000);
         recorder.setOutputFile(fileName);
 
         try {
