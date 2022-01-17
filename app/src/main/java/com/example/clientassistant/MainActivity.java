@@ -61,23 +61,16 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             Log.w("Warning ","no PERMISSION ACCESS_NETWORK_STATE");
         }
-        //new ClientSocket(fileName);
-        //new ClientSocket("1111111");
     }
 
     private void startRecording() {
         recorder = new MediaRecorder();
-        /*recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC_ELD);
-        recorder.setAudioSamplingRate(44100);*/
-
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(AudioFormat.ENCODING_PCM_16BIT);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setAudioChannels(1);
-        recorder.setAudioEncodingBitRate(128000);
-        recorder.setAudioSamplingRate(48000);
+        recorder.setAudioEncodingBitRate(16000);
+        recorder.setAudioSamplingRate(44100);
         recorder.setOutputFile(fileName);
 
         try {
