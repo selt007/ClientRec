@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ClientSocket implements Runnable {
-    String adress = "192.168.0.173";
+    String address = "192.168.0.173";
     String resultStr;
     int port = 8989;
     Thread thread;
@@ -22,7 +22,7 @@ public class ClientSocket implements Runnable {
 
     @Override
     public void run() {
-        try (Socket clientSocket = new Socket (adress, port)) {
+        try (Socket clientSocket = new Socket (address, port)) {
             Log.i("Result ", resultStr);
             clientSocket.setTcpNoDelay(false);
 
