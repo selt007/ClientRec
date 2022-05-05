@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
     private static String fileName = null;
 
     private RecordButton recordButton = null;
-    private MediaRecorder recorder = null;
+    private WavRecorder recorder = new WavRecorder(this);
 
-    private PlayButton   playButton = null;
-    private MediaPlayer   player = null;
+    private PlayButton playButton = null;
+    private MediaPlayer player = null;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -54,38 +54,30 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.w("Warning ","no PERMISSION INTERNET");
+            Log.w("Warning ", "no PERMISSION INTERNET");
         }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_NETWORK_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
-            Log.w("Warning ","no PERMISSION ACCESS_NETWORK_STATE");
+            Log.w("Warning ", "no PERMISSION ACCESS_NETWORK_STATE");
         }
     }
 
     private void startRecording() {
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setAudioChannels(1);
-        recorder.setAudioEncodingBitRate(16000);
-        recorder.setAudioSamplingRate(44100);
-        recorder.setOutputFile(fileName);
-
         try {
-            recorder.prepare();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
+            recorder.start(null, false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
-        recorder.start();
     }
 
     private void stopRecording() {
-        recorder.stop();
-        recorder.release();
-        recorder = null;
+        try {
+            recorder.stop();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private void onRecord(boolean start) {
