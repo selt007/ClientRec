@@ -2,30 +2,22 @@ package com.example.clientassistant;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "AudioRecordTest";
     private static String fileName = null;
+    private boolean askedPermission = false;
+    private Button startButton = null;
+    private final int PERMISSIONS_RECORD_AUDIO = 1;
+    private final WavRecorder recorder = new WavRecorder(this);
 
-    private RecordButton recordButton = null;
-    private WavRecorder recorder = new WavRecorder(this);
-
-    private PlayButton playButton = null;
-    private MediaPlayer player = null;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -33,23 +25,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(event -> startButtonOnClick());
+
         fileName = getExternalCacheDir().getAbsolutePath();
         fileName += "/temp.wav";
-
-        LinearLayout ll = new LinearLayout(this);
-        recordButton = new RecordButton(this);
-        ll.addView(recordButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-        playButton = new PlayButton(this);
-        ll.addView(playButton,
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        0));
-        setContentView(ll);
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET)
@@ -63,94 +43,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void startButtonOnClick() {
+        if(recorder.isRecording()) stopRecording();
+        else startRecording();
+    }
+
     private void startRecording() {
-        try {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             recorder.start(null, false);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+            startButton.setText("Stop recording");
+        } else {
+            //When permission is not granted by user, show them message why this permission is needed.
+            if (askedPermission && ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.RECORD_AUDIO)) {
+                Toast.makeText(this, "Please grant permissions to record audio", Toast.LENGTH_LONG).show();
+            }
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    PERMISSIONS_RECORD_AUDIO);
+            askedPermission = true;
+        } // else wait for permission result
     }
 
     private void stopRecording() {
-        try {
-            recorder.stop();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
-    private void onRecord(boolean start) {
-        if (start) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
-    }
-
-    private void onPlay(boolean start) {
-        if (start) {
-            startPlaying();
-        } else {
-            stopPlaying();
-        }
-    }
-
-    private void startPlaying() {
-        player = new MediaPlayer();
-        try {
-            player.setDataSource(fileName);
-            player.prepare();
-            player.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-        //new ClientSocket(fileName);
-        new ClientSocket(fileName);
-    }
-
-    private void stopPlaying() {
-        player.release();
-        player = null;
-    }
-
-    class RecordButton extends android.support.v7.widget.AppCompatButton {
-        boolean mStartRecording = true;
-
-        OnClickListener clicker = v -> {
-            onRecord(mStartRecording);
-            if (mStartRecording) {
-                setText("Stop recording");
-            } else {
-                setText("Start recording");
-            }
-            mStartRecording = !mStartRecording;
-        };
-
-        public RecordButton(Context ctx) {
-            super(ctx);
-            setText("Start recording");
-            setOnClickListener(clicker);
-        }
-    }
-
-    class PlayButton extends android.support.v7.widget.AppCompatButton {
-        boolean mStartPlaying = true;
-
-        OnClickListener clicker = v -> {
-            onPlay(mStartPlaying);
-            if (mStartPlaying) {
-                setText("Stop playing");
-            } else {
-                setText("Start playing");
-            }
-            mStartPlaying = !mStartPlaying;
-        };
-
-        public PlayButton(Context ctx) {
-            super(ctx);
-            setText("Start playing");
-            setOnClickListener(clicker);
-        }
+        recorder.stop();
+        startButton.setText("Start recording");
     }
 }

@@ -12,7 +12,8 @@ import kotlin.experimental.and
 
 class WavRecorder(private val context: Context) {
     private var recorder: AudioRecord? = null
-    private var isRecording = false
+    var isRecording = false
+        private set
 
     private var recordingThread: Thread? = null
 
