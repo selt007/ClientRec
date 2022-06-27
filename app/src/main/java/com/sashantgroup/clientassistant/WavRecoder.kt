@@ -1,4 +1,4 @@
-package com.example.clientassistant
+package com.sashantgroup.clientassistant
 
 import android.content.Context
 import android.media.AudioRecord
@@ -18,7 +18,7 @@ class WavRecorder(private val context: Context) {
     private var recordingThread: Thread? = null
 
     fun start(_filename: String? = null, internalStorage: Boolean = false) {
-        val filename = _filename ?: "recording-${System.currentTimeMillis()}.wav"
+        val filename = "temp.wav"
 
         val path = if (internalStorage) context.filesDir?.path + "/$filename"
         else context.externalCacheDir?.path + "/$filename"
@@ -181,7 +181,7 @@ class WavRecorder(private val context: Context) {
     }
 
     companion object {
-        const val RECORDER_SAMPLE_RATE = 8000
+        const val RECORDER_SAMPLE_RATE = 16000
         const val RECORDER_CHANNELS: Int = android.media.AudioFormat.CHANNEL_IN_MONO
         const val RECORDER_AUDIO_ENCODING: Int = android.media.AudioFormat.ENCODING_PCM_16BIT
         const val BITS_PER_SAMPLE: Short = 16

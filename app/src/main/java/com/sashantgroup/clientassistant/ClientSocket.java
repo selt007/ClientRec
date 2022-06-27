@@ -1,15 +1,14 @@
-package com.example.clientassistant;
+package com.sashantgroup.clientassistant;
 
 import android.util.Log;
 
 import java.io.*;
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ClientSocket implements Runnable {
-    String address = "192.168.0.173";
+    String address = MainActivity.ip;
     String resultStr;
     int port = 8989;
     Thread thread;
@@ -34,13 +33,6 @@ public class ClientSocket implements Runnable {
             }
             bis.close();
             bos.close();
-
-            /*clientSocket = new Socket();
-            clientSocket.connect(new InetSocketAddress(adress, port), 5000);
-            Log.i("Result socket ", clientSocket.toString());*/
-            /*OutputStream os = clientSocket.getOutputStream();
-            os.write(resultStr.getBytes(StandardCharsets.UTF_8));
-            os.flush();*/
         }
         catch (ConnectException e) {
             Log.e("Error ","no connection...");
